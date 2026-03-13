@@ -1,0 +1,3 @@
+displayName = Terraria JJK
+author = Tyr7s, TacoConKvass, spriters
+version = 1.0
