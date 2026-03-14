@@ -219,7 +219,7 @@ public class BerryLayers {
 			var player = drawInfo.drawPlayer;
 			if (player.invis) return;
 			
-			player.hairColor = FNA.Color.Transparent;
+			drawInfo.colorHair = FNA.Color.Transparent;
 			var color = BerryLayers.GetColor(player);
 
 			// Taken from https://github.com/Mr-Plauge/MrPlagueRaces-1.4/
