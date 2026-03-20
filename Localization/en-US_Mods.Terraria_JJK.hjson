@@ -6,4 +6,11 @@ Items: {
 		DisplayName: Mythical Beast Berries
 		Tooltip: Press {0} to transform, giving you a combo attack and boosting your damage by {1}%.
 	}
+
+	VolcanicImmolator: {
+		DisplayName: Volcanic Immolator
+		Tooltip: ""
+	}
 }
+
+Projectiles.CalderaArrow.DisplayName: Caldera Arrow
