@@ -76,10 +76,20 @@ public static class ComponentExtensions
 	public static PlayerComponent<T> GetComponent<T>(this Terraria.Player player) where T : struct => player.GetModPlayer<PlayerComponent<T>>();
 	public static ProjectileComponent<T> GetComponent<T>(this Terraria.Projectile projectile) where T : struct => projectile.GetGlobalProjectile<ProjectileComponent<T>>();
 
-	public static void Enable<T>(this Terraria.NPC npc) where T : struct => npc.GetComponent<T>().Enabled = true;
-	public static void Enable<T>(this Terraria.Item item) where T : struct => item.GetComponent<T>().Enabled = true;
-	public static void Enable<T>(this Terraria.Player player) where T : struct => player.GetComponent<T>().Enabled = true;
-	public static void Enable<T>(this Terraria.Projectile projectile) where T : struct => projectile.GetComponent<T>().Enabled = true;
+	public static void Enable<T>(this Terraria.NPC npc) where T : struct => SetEnabled<T>(npc, true);
+	public static void Enable<T>(this Terraria.Item item) where T : struct => SetEnabled<T>(item, true);
+	public static void Enable<T>(this Terraria.Player player) where T : struct => SetEnabled<T>(player, true);
+	public static void Enable<T>(this Terraria.Projectile projectile) where T : struct => SetEnabled<T>(projectile, true);
+
+	public static void Disable<T>(this Terraria.NPC npc) where T : struct => SetEnabled<T>(npc, false);
+	public static void Disable<T>(this Terraria.Item item) where T : struct => SetEnabled<T>(item, false);
+	public static void Disable<T>(this Terraria.Player player) where T : struct => SetEnabled<T>(player, false);
+	public static void Disable<T>(this Terraria.Projectile projectile) where T : struct => SetEnabled<T>(projectile, false);
+
+	public static void SetEnabled<T>(this Terraria.NPC npc, bool value) where T : struct => npc.GetComponent<T>().Enabled = value;
+	public static void SetEnabled<T>(this Terraria.Item item, bool value) where T : struct => item.GetComponent<T>().Enabled = value;
+	public static void SetEnabled<T>(this Terraria.Player player, bool value) where T : struct => player.GetComponent<T>().Enabled = value;
+	public static void SetEnabled<T>(this Terraria.Projectile projectile, bool value) where T : struct => projectile.GetComponent<T>().Enabled = value;
 
 	public static void Set<T>(this Terraria.NPC npc, T data) where T : struct => npc.GetComponent<T>().Data = data;
 	public static void Set<T>(this Terraria.Item item, T data) where T : struct => item.GetComponent<T>().Data = data;
