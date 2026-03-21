@@ -7,6 +7,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Reference Include="../ModReader/Daybreak/Daybreak.dll" />
+		<Reference Include="..\..\ModReader\Daybreak\Daybreak.dll" />
 	</ItemGroup>
 </Project>
