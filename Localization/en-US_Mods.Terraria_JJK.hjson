@@ -11,6 +11,15 @@ Items: {
 		DisplayName: Volcanic Immolator
 		Tooltip: ""
 	}
+
+	ResonantRepeater: {
+		DisplayName: Resonant Repeater
+		Tooltip: ""
+	}
 }
 
-Projectiles.CalderaArrow.DisplayName: Caldera Arrow
+Projectiles: {
+	CalderaArrow.DisplayName: Caldera Arrow
+	ResonantNail.DisplayName: Resonant Nail
+	StrawDoll.DisplayName: Straw Doll
+}
