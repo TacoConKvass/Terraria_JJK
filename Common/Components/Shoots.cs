@@ -46,7 +46,7 @@ file class Shoots_Impl
 			Terraria.Projectile.NewProjectile(
 				source,
 				position + data.RelativePosition(),
-				data.Velocity(velocity),
+				data.Velocity(Terraria.Utils.SafeNormalize(velocity, FNA.Vector2.Zero)),
 				type,
 				damage,
 				knockback,

@@ -40,8 +40,8 @@ public class CalderaArrow : TML.ModProjectile
 			Type = Terraria.ID.BuffID.CursedInferno,
 			Time = Duration
 		});
-		EC.Set(Projectile, new Components.OnHit.Shoot {
-			Queue = (Types: [Terraria.ID.ProjectileID.CursedArrow], Random: false),
+		EC.With(Projectile, new Components.OnHit.Shoot {
+			Type = Terraria.ID.ProjectileID.CursedArrow,
 			Count = SpawnedFlames,
 			RelativePosition = static () => FNA.Vector2.Zero,
 			Velocity = static () => Terraria.Utils.NextVector2Unit(Terraria.Main.rand) * FlameSpeed
