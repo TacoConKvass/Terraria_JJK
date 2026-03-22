@@ -38,7 +38,6 @@ file class Shoots_Impl
 		if (!EC.TryGet<Shoots>(item, out var data)) return orig(item, player, source, position, velocity, type, damage, knockback);
 
 		type = data.Type;
-		System.Console.WriteLine("Wahoo");
 		for (int i = 0; i < data.Count; i++) {
 			if (data.Queue is (int[] Types, bool Random) queue) {
 				type = queue.Random ? Terraria.Utils.NextFromList(Terraria.Main.rand, queue.Types) : queue.Types[i % data.Count];
