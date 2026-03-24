@@ -1,4 +1,4 @@
-using CsvHelper;
+using static Terraria.Utils;
 
 namespace Terraria_JJK.Content;
 
@@ -7,17 +7,17 @@ public class VolcanicImmolator : TML.ModItem
 	public override string Texture => Terraria_JJK.AssetPath + $"Items/{nameof(VolcanicImmolator)}";
 
 	public override void SetDefaults() {
-		Item.Size = new FNA.Vector2 { X = 70, Y = 70 };
+		Item.Size = new FNA.Vector2 { X = 32, Y = 70 };
 		Item.DamageType = TML.DamageClass.Ranged;
 		Item.damage = 20;
 
 		Item.useStyle = Terraria.ID.ItemUseStyleID.Shoot;
 
 		Item.useAmmo = Terraria.ID.AmmoID.Arrow;
-		EC.With(Item, new Components.Shoots {
+		Item.With(new Components.Shoots {
 			Type = CalderaArrow.ID,
-			Delay = 35,
-			Velocity = static (orig) => orig * 5f
+			Delay = 40,
+			Velocity = static (orig) => orig * 8f
 		});
 	}
 }
@@ -30,7 +30,7 @@ public class CalderaArrow : TML.ModProjectile
 
 	const int Duration = 10 * 60; // 10 seconds
 	const int SpawnedFlames = 5;
-	const float FlameSpeed = 12f;
+	const float FlameSpeed = 6f;
 
 	public override void SetDefaults() {
 		Projectile.Size = new FNA.Vector2 { X = 12, Y = 12 };
@@ -38,37 +38,55 @@ public class CalderaArrow : TML.ModProjectile
 		Projectile.friendly = true;
 		Projectile.aiStyle = Terraria.ID.ProjAIStyleID.Arrow;
 
-		EC.With(Projectile, new Components.OnHit.BuffTarget {
-			Type = Terraria.ID.BuffID.CursedInferno,
-			Time = Duration
+		Projectile.With(new Components.OnHit<Components.ApplyBuff> {
+			Inner = new() {
+				Type = Terraria.ID.BuffID.CursedInferno,
+				Duration = Duration,
+			},
+			Target = Components.TargetType.Victim
 		});
-		EC.With(Projectile, new Components.OnHit.Shoot {
-			Type = VolcanicFlame.ID,
-			Count = SpawnedFlames,
-			RelativePosition = static () => FNA.Vector2.Zero,
-			Velocity = static () => Terraria.Utils.NextVector2Unit(Terraria.Main.rand) * FlameSpeed
+		Projectile.With(new Components.OnHit<Components.Shoots> {
+			Inner = new() {
+				Type = VolcanicFlame.ID,
+				Count = SpawnedFlames,
+				RelativePosition = static () => FNA.Vector2.Zero,
+				Velocity = static (_) => Terraria.Utils.NextVector2Unit(Terraria.Main.rand) * FlameSpeed
+			},
+			Target = Components.TargetType.None,
 		});
 	}
 }
 
 public class VolcanicFlame : TML.ModProjectile
 {
-	public override string Texture => Terraria_JJK.AssetPath + $"Projectiles/{nameof(ResonantNail)}";
+	// public override string Texture => Terraria_JJK.AssetPath + $"Projectiles/{nameof(ResonantNail)}";
+	public override string Texture => $"Terraria/Images/Item_{Terraria.ID.ItemID.LivingFireBlock}";
 
 	public static int ID => TML.ModContent.ProjectileType<VolcanicFlame>();
 
 	public override void SetDefaults() {
 		Projectile.Size = new FNA.Vector2 { X = 10, Y = 10 };
-		Projectile.timeLeft = 20 * 60;
+		Projectile.timeLeft = (int)(2.5f * 60);
 		Projectile.friendly = true;
 		Projectile.tileCollide = false;
 		Projectile.penetrate = -1;
 		Projectile.usesLocalNPCImmunity = true;
 		Projectile.localNPCHitCooldown = 20;
 
-		EC.With(Projectile, new Components.OnTimer.DampenVelocity {
-			Factor = 0.05f,
-			Timer = 0.1f * 60, // trigger after a tenth of a second
+		Projectile.With(new Components.OnTimer<Components.DampenVelocity> {
+			Inner = new() {
+				Factor = 0.05f,
+				MinVelocity = 0.1f,
+			},
+			Timer = 60 / 10 // Trigger after a tenth of a second
+		});
+		Projectile.With(new Components.OnTimer<Components.Fade> {
+			Inner = new() {
+				Starting = 1f,
+				Final = 0.1f,
+				Duration = (int)(1.5f * 60), // A second and a half,
+			},
+			Timer = 60, // After a second
 		});
 	}
 }
