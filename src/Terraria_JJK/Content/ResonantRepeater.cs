@@ -11,12 +11,12 @@ public class ResonantRepeater : TML.ModItem
 		Item.useStyle = Terraria.ID.ItemUseStyleID.Shoot;
 		Item.useAmmo = Terraria.ID.AmmoID.Arrow;
 
-		EC.With(Item, new Components.Shoots {
+		Item.With(new Components.Shoots {
 			Type = ResonantNail.ID,
 			Delay = 30,
 			Velocity = static (orig) => orig * 7.5f
 		});
-		EC.With(Item, new Components.RightClickable { Effect = TriggerDoll });
+		Item.With(new Components.RightClickable { Effect = TriggerDoll });
 	}
 
 	void TriggerDoll(Terraria.Player player) {
@@ -43,8 +43,8 @@ public class ResonantNail : TML.ModProjectile
 		Projectile.timeLeft = 20 * 60;
 		Projectile.friendly = true;
 
-		EC.With(Projectile, new Components.Sticky { TicksOfDamagePerSecond = 1 });
-		EC.With(Projectile, new Components.RotateWithVelocity {
+		Projectile.With(new Components.Sticky { TicksOfDamagePerSecond = 1 });
+		Projectile.With(new Components.RotateWithVelocity {
 			AdditionalRotation = FNA.MathHelper.PiOver2
 		});
 	}
@@ -60,7 +60,7 @@ public class StrawDoll : TML.ModProjectile
 		Projectile.Size = new FNA.Vector2 { X = 22, Y = 30 };
 		Projectile.timeLeft = 5 * 60;
 
-		EC.With(Projectile, new Components.StuckTo {
+		Projectile.With(new Components.StuckTo {
 			Target = Terraria.Main.player[Projectile.owner],
 			WithOffset = GetOffset
 		});
