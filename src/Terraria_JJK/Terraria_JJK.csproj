@@ -16,8 +16,10 @@
 	</ItemGroup>
 	
 	<Target Name="BuildEffects" BeforeTargets="BuildMod">
-		<Message Text="Compiling shaders..." />
-        <Exec Condition="$([MSBuild]::IsOSPlatform('Windows'))" Command="@(EffectFiles->'&quot;../..//bin/fxc.exe&quot; &quot;%(RecursiveDir)%(FileName)%(Extension)&quot; /T fx_2_0 /nologo /Fo &quot;%(RecursiveDir)%(FileName).fxc&quot; &#xA;&#xD;')" IgnoreExitCode="true" />
-		<Exec Condition="$([MSBuild]::IsOSPlatform('Linux'))" Command="@(EffectFiles->'wine &quot;../../bin/fxc.exe&quot; &quot;%(RecursiveDir)%(FileName)%(Extension)&quot; /T fx_2_0 /nologo /Fo &quot;%(RecursiveDir)%(FileName).fxc&quot; &#xA;&#xD;')" IgnoreExitCode="true" />
+		<Message Text="Compiling shaders..."  Importance="high"/>
+		<Message Text="%(EffectFiles.FileName)"  Importance="high"/>
+
+        <Exec Condition="$([MSBuild]::IsOSPlatform('Windows'))" Command="@(EffectFiles->'&quot;../..//bin/fxc.exe&quot; &quot;%(RecursiveDir)%(FileName)%(Extension)&quot; /T fx_2_0 /nologo /Fo &quot;%(RecursiveDir)%(FileName).fxc&quot; &#xA;&#xD;')" IgnoreExitCode="false" />
+		<Exec Condition="$([MSBuild]::IsOSPlatform('Linux'))" Command="@(EffectFiles->'wine &quot;../../bin/fxc.exe&quot; &quot;%(RecursiveDir)%(FileName)%(Extension)&quot; /T fx_2_0 /nologo /Fo &quot;%(RecursiveDir)%(FileName).fxc&quot; &#xA;&#xD;')" IgnoreExitCode="false" />
 	</Target>
 </Project>
