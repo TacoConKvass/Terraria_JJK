@@ -1,11 +1,11 @@
 namespace Terraria_JJK.Components;
 
 [EC.Component(Wraps = [
-	typeof(Fade), typeof(Shoots), typeof(ApplyBuff), typeof(DampenVelocity), typeof(Animate)
+	typeof(Fade), typeof(Shoots), typeof(DampenVelocity), typeof(Animate), typeof(CantDamage)
 ])]
-public struct OnTimer<T> where T : struct
+public struct WhileTimer<T> where T : struct
 {
-	static OnTimer() {
+	static WhileTimer() {
 		DaybreakHooks.GlobalProjectileHooks.AI.Event += TickProjectile;
 	}
 
@@ -14,14 +14,15 @@ public struct OnTimer<T> where T : struct
 
 	internal static void TickProjectile(DaybreakHooks.GlobalProjectileHooks.AI.Original orig, TML.GlobalProjectile self, Terraria.Projectile projectile) {
 		orig(projectile);
-		if (!projectile.TryGet<OnTimer<T>>(out var data)) return;
+		if (!projectile.TryGet<WhileTimer<T>>(out var data)) return;
 
 		if (data.Timer > 0) {
 			projectile.Set(data with { Timer = data.Timer - 1 });
+			if (!projectile.Enabled<T>()) projectile.With(data.Inner);
 			return;
 		}
 
-		projectile.Disable<OnTimer<T>>();
-		projectile.With(data.Inner);
+		projectile.Disable<WhileTimer<T>>();
+		projectile.Disable<T>();
 	}
 }

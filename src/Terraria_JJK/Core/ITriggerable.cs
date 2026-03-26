@@ -1,6 +1,6 @@
 namespace Terraria_JJK.Core;
 
-public interface ITriggerable<T>
+public interface ITriggerable
 {
-	public void Trigger(T entity);
+	public void Trigger(Terraria.Entity source, Terraria.Entity target);
 }

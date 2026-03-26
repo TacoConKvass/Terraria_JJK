@@ -10,7 +10,7 @@ public enum TargetType : byte
 [EC.Component(Wraps = [
 	typeof(Fade), typeof(ApplyBuff), typeof(Shoots)
 ])]
-public record struct OnHit<T>(T Inner, TargetType Target) where T : struct
+public record struct OnHit<T>(T Inner) where T : struct
 {
 	static OnHit() {
 		DaybreakHooks.GlobalProjectileHooks.OnHitNPC.Event += OnProjectileHitNPC;
@@ -20,20 +20,11 @@ public record struct OnHit<T>(T Inner, TargetType Target) where T : struct
 		orig(projectile, target, hit, damageDone);
 
 		if (!projectile.TryGet<OnHit<T>>(out var data)) return;
-
-		T? _ = data.Target switch {
-			TargetType.Self => projectile.With(data.Inner),
-			TargetType.Victim => target.With(data.Inner),
-			TargetType.None => TryTrigger(projectile, data.Inner),
-			_ => null,
-		};
+		TryTrigger(projectile, target, data.Inner);
 	}
 
-	static T? TryTrigger(Terraria.Projectile entity, T data) {
-		if (data is not Core.ITriggerable<Terraria.Projectile> i) return null;
-
-		entity.With(data);
-		i.Trigger(entity);
-		return null;
+	static void TryTrigger(Terraria.Entity source, Terraria.Entity entity, T data) {
+		if (data is not Core.ITriggerable i) return;
+		i.Trigger(source, entity);
 	}
 }

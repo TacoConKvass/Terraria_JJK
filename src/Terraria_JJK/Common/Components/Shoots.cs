@@ -1,7 +1,7 @@
 namespace Terraria_JJK.Components;
 
 [EC.Component]
-public struct Shoots : Core.ITriggerable<Terraria.Projectile>
+public struct Shoots : Core.ITriggerable
 {
 	public Shoots() {
 		Type = Terraria.ID.ProjectileID.PurificationPowder;
@@ -30,28 +30,35 @@ public struct Shoots : Core.ITriggerable<Terraria.Projectile>
 		}
 	}
 
-	void Core.ITriggerable<Terraria.Projectile>.Trigger(Terraria.Projectile projectile) {
-		if (!projectile.TryGet<Shoots>(out var data)) return;
+	void Core.ITriggerable.Trigger(Terraria.Entity source, Terraria.Entity target) {
+		var (damage, knockBack, owner) = source switch {
+			Terraria.Projectile p => (p.damage, p.knockBack, p.owner),
+			Terraria.Item i => (i.damage, i.knockBack, -1),
+			Terraria.Player player => (player.HeldItem.damage, player.HeldItem.knockBack, player.whoAmI),
+			_ => (10, 1, -1)
+		};
+		for (int i = 0; i < Count; i++) {
+			var type = Type;
 
-		for (int i = 0; i < data.Count; i++) {
-			var type = data.Type;
-
-			if (data.Queue is (int[] Types, bool Random) queue)
+			if (Queue is (int[] Types, bool Random) queue)
 				type = queue.Random ? Terraria.Utils.NextFromList(Terraria.Main.rand, queue.Types) : queue.Types[i % queue.Types.Length];
 
 			Terraria.Projectile.NewProjectile(
-				projectile.GetSource_FromThis(),
-				data.RelativePosition() + projectile.Center,
-				data.Velocity(projectile.velocity),
+				target.GetSource_FromThis(),
+				RelativePosition() + target.Center,
+				Velocity(source.velocity),
 				type,
-				projectile.damage,
-				projectile.knockBack,
-				projectile.owner
+				damage,
+				knockBack,
+				owner
 			);
 		}
 
-		data.Callback?.Invoke();
-		projectile.Disable<Shoots>();
+		Callback?.Invoke();
+		(source switch {
+			Terraria.Projectile p => p,
+			_ => null
+		})?.Disable<Shoots>();
 	}
 
 	[DaybreakHooks.GlobalItemHooks.Shoot]
