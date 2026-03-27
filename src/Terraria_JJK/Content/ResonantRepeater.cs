@@ -47,6 +47,11 @@ public class ResonantNail : TML.ModProjectile
 		Projectile.With(new Components.RotateWithVelocity {
 			AdditionalRotation = FNA.MathHelper.PiOver2
 		});
+		Projectile.With(new Components.Trail {
+			MaxPositions = 30,
+			Color = FNA.Color.Blue,
+			StartingWidth = 5f,
+		});
 	}
 }
 
