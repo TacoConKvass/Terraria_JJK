@@ -4,6 +4,7 @@ using Rendering = Daybreak.Common.Rendering;
 using static Daybreak.Common.Rendering.SpriteBatchSnapshotExtensions;
 using static Daybreak.Common.Rendering.SpriteBatchScopeExtensions;
 using static Terraria.Utils;
+using static System.MemoryExtensions;
 
 namespace Terraria_JJK.Components;
 
@@ -33,7 +34,7 @@ public record struct Trail(int MaxPositions, PositionQueue Positions, float Star
 	}
 
 	static void RenderTrail(in Trail data, Terraria.Projectile projectile) {
-		var shape_count = Core.Rendering.PrimitiveCount(Type, data.Positions?.Count ?? 0);
+		var shape_count = data.Positions?.Count ?? 0;
 		if (shape_count < 1) return;
 
 		var positions = data.Positions!.ToArray();
@@ -43,16 +44,18 @@ public record struct Trail(int MaxPositions, PositionQueue Positions, float Star
 		for (int i = 1; i < initial_count; i++) {
 			var current = positions[^i];
 			var next = positions[^(i + 1)];
-			var width = data.StartingWidth * (1f - (i / (float)(initial_count - 1)));
+			var width = (data.StartingWidth / 2) * (1f - (i / (float)(initial_count - 1)));
 			var normal = new FNA.Vector3(new FNA.Vector2(next.X - current.X, next.Y - current.Y).SafeNormalize(FNA.Vector2.Zero).RotatedBy(FNA.MathHelper.PiOver2), 0);
 			vertices[(i * 2) - 1] = new VertexData(current + (normal * width), data.Color, FNA.Vector2.Zero);
 			vertices[(i * 2) - 2] = new VertexData(current - (normal * width), data.Color, FNA.Vector2.UnitY);
 		}
 
 		vertices[^1] = new VertexData(positions[0], data.Color, new FNA.Vector2 { X = 1, Y = 0.5f });
+		vertices.Reverse();
 
 		var matrix = Core.Rendering.GetMatrix();
 		var snapshot = new Rendering.SpriteBatchSnapshot(Terraria.Main.spriteBatch);
+
 		using (Terraria.Main.spriteBatch.Scope()) {
 			Terraria.Main.spriteBatch.Begin(snapshot with {
 				RasterizerState = FNA.Graphics.RasterizerState.CullNone,
@@ -61,7 +64,10 @@ public record struct Trail(int MaxPositions, PositionQueue Positions, float Star
 			var effect = Core.Rendering.DefaultEffect.Value;
 			effect.Parameters["WorldViewProjection"].SetValue(matrix);
 			effect.CurrentTechnique.Passes["Texture"].Apply();
-			Terraria.Main.graphics.GraphicsDevice.DrawUserPrimitives(Type, vertices.ToArray(), 0, shape_count);
+			Terraria.Main.graphics.GraphicsDevice.DrawUserPrimitives(
+				Type, vertices.ToArray(), 0,
+				Core.Rendering.PrimitiveCount(Type, vertices.Length)
+			);
 		}
 	}
 }
