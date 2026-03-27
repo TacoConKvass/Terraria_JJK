@@ -1,6 +1,7 @@
 #pragma warning (disable : 4717)
 
 matrix WorldViewProjection;
+texture2D inputTexture;
 
 struct PixelShaderInput
 {
@@ -11,10 +12,17 @@ struct PixelShaderInput
 
 struct VertexShaderInput
 {
-
     float4 Position : POSITION;
     float4 Color : COLOR0;
     float2 TextureCoord : TEXCOORD0;
+};
+
+sampler2D textureSampler = sampler_state {
+	Texture = <inputTexture>;
+	MinFilter = Linear;
+	MagFilter = Linear;
+	AddressU = Wrap;
+	AddressV = Wrap;
 };
 
 PixelShaderInput MainVertexShader(VertexShaderInput input)
@@ -29,7 +37,9 @@ PixelShaderInput MainVertexShader(VertexShaderInput input)
 
 float4 TextureturePixelShader(PixelShaderInput input) : COLOR0
 {
-    return input.Color;
+	float4 texture_sample = tex2D(textureSampler, input.TextureCoord);
+	float lightness = max(texture_sample.r, max(texture_sample.g, texture_sample.b));
+	return input.Color * lightness;
 }
 
 technique Technique1
