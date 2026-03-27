@@ -1,3 +1,8 @@
 <Solution>
+  <Folder Name="/Daybreak/">
+    <Project Path="src/daybreak/src/Daybreak.CodeAnalysis/Daybreak.CodeAnalysis.csproj" />
+    <Project Path="src/daybreak/src/Daybreak.SourceGen/Daybreak.SourceGen.csproj" />
+    <Project Path="src/daybreak/src/Daybreak/Daybreak.csproj" />
+  </Folder>
   <Project Path="./src/Terraria_JJK/Terraria_JJK.csproj" />
 </Solution>
