@@ -12,6 +12,7 @@ public class VolcanicImmolator : TML.ModItem
 		Item.damage = 20;
 
 		Item.useStyle = Terraria.ID.ItemUseStyleID.Shoot;
+		Item.UseSound = Terraria.ID.SoundID.Item5;
 
 		Item.useAmmo = Terraria.ID.AmmoID.Arrow;
 		Item.With(new Components.Shoots {

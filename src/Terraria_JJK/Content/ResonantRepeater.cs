@@ -1,3 +1,6 @@
+using TextureAsset = ReLogic.Content.Asset<Microsoft.Xna.Framework.Graphics.Texture2D>;
+using static Terraria.Utils;
+
 namespace Terraria_JJK.Content;
 
 public class ResonantRepeater : TML.ModItem
@@ -10,11 +13,12 @@ public class ResonantRepeater : TML.ModItem
 		Item.DamageType = TML.DamageClass.Ranged;
 		Item.useStyle = Terraria.ID.ItemUseStyleID.Shoot;
 		Item.useAmmo = Terraria.ID.AmmoID.Arrow;
+		Item.UseSound = Terraria.ID.SoundID.Item5;
 
 		Item.With(new Components.Shoots {
 			Type = ResonantNail.ID,
 			Delay = 30,
-			Velocity = static (orig) => orig * 7.5f
+			Velocity = static (orig) => orig * 9.5f
 		});
 		Item.With(new Components.RightClickable { Effect = TriggerDoll });
 	}
@@ -30,6 +34,8 @@ public class ResonantRepeater : TML.ModItem
 			Owner: player.whoAmI
 		);
 	}
+
+	public override FNA.Vector2? HoldoutOffset() => FNA.Vector2.UnitX * -9;
 }
 
 public class ResonantNail : TML.ModProjectile
@@ -37,6 +43,11 @@ public class ResonantNail : TML.ModProjectile
 	public override string Texture => Terraria_JJK.AssetPath + $"Projectiles/{nameof(ResonantNail)}";
 
 	public static int ID => TML.ModContent.ProjectileType<ResonantNail>();
+	static TextureAsset trail_texture = null!;
+
+	public override void SetStaticDefaults() {
+		trail_texture = TML.ModContent.Request<FNA.Graphics.Texture2D>(Terraria_JJK.AssetPath + "Extra/HollowBeam");
+	}
 
 	public override void SetDefaults() {
 		Projectile.Size = new FNA.Vector2 { X = 10, Y = 10 };
@@ -48,9 +59,14 @@ public class ResonantNail : TML.ModProjectile
 			AdditionalRotation = FNA.MathHelper.PiOver2
 		});
 		Projectile.With(new Components.Trail {
-			MaxPositions = 15,
-			Color = FNA.Color.Blue,
-			StartingWidth = 10f,
+			MaxPositions = 9,
+			Color = static (_) => FNA.Color.Cyan,
+			Width = static (progress) => 7f * (1f - progress),
+			Texture = trail_texture?.Value
+		});
+		Projectile.With(new Components.OnHit<Components.Trail> {
+			Inner = new() { MaxPositions = 0, },
+			Target = Components.TargetType.Self
 		});
 	}
 }
