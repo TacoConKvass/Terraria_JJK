@@ -4,7 +4,7 @@ namespace Terraria_JJK.Components;
 public record struct Animate(int FrameDelay)
 {
 	[DaybreakHooks.GlobalProjectileHooks.AI]
-	static void A(Terraria.Projectile projectile) {
+	static void AnimateProjectile(Terraria.Projectile projectile) {
 		if (!projectile.TryGet(out Animate data)) return;
 
 		projectile.frame++;
