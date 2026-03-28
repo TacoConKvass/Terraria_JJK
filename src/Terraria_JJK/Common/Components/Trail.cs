@@ -59,7 +59,7 @@ public record struct Trail(int MaxPositions, PositionQueue Positions, System.Fun
 
 		vertices[^1] = new VertexData(positions[0], data.Color(1f), new FNA.Vector2 { X = 1, Y = 0.5f });
 
-		var matrix = Core.Rendering.GetMatrix();
+		var matrix = Core.Rendering.Helpers.GetMatrix();
 		var snapshot = new Rendering.SpriteBatchSnapshot(Terraria.Main.spriteBatch);
 
 		using (Terraria.Main.spriteBatch.Scope()) {
@@ -67,13 +67,13 @@ public record struct Trail(int MaxPositions, PositionQueue Positions, System.Fun
 				RasterizerState = FNA.Graphics.RasterizerState.CullNone,
 			});
 
-			var effect = Core.Rendering.DefaultEffect.Value;
+			var effect = Core.Rendering.Helpers.DefaultEffect.Value;
 			effect.Parameters["WorldViewProjection"].SetValue(matrix);
 			effect.Parameters["inputTexture"].SetValue(data.Texture ?? Terraria.GameContent.TextureAssets.MagicPixel.Value);
 			effect.CurrentTechnique.Passes["Texture"].Apply();
 			Terraria.Main.graphics.GraphicsDevice.DrawUserPrimitives(
 				Type, vertices.ToArray(), 0,
-				Core.Rendering.PrimitiveCount(Type, vertices.Length)
+				Core.Rendering.Helpers.PrimitiveCount(Type, vertices.Length)
 			);
 		}
 	}

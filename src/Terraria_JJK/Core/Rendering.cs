@@ -1,8 +1,8 @@
 using static Terraria.Utils;
 
-namespace Terraria_JJK.Core;
+namespace Terraria_JJK.Core.Rendering;
 
-public class Rendering
+public class Helpers
 {
 	public static ReLogic.Content.Asset<FNA.Graphics.Effect> DefaultEffect = null!;
 
