@@ -20,12 +20,19 @@ public class ResonantRepeater : TML.ModItem
 			Delay = 30,
 			Velocity = static (orig) => orig * 9.5f
 		});
-		Item.With(new Components.RightClickable { Effect = TriggerDoll });
+		Item.With(new Components.RightClickable {
+			When = static (Terraria.Entity entity) => (entity as Terraria.Player)?.ownedProjectileCounts[StrawDoll.ID] == 0,
+			Effect = TriggerDoll
+		});
 	}
 
-	void TriggerDoll(Terraria.Player player) {
+	public override FNA.Vector2? HoldoutOffset() => FNA.Vector2.UnitX * -9;
+
+	public override bool CanShoot(Terraria.Player player) => player.altFunctionUse != 2;
+
+	bool? TriggerDoll(Terraria.Player player) {
 		Terraria.Projectile.NewProjectile(
-			Item.GetSource_FromThis(),
+			player.GetSource_FromThis(),
 			player.Center,
 			FNA.Vector2.Zero,
 			StrawDoll.ID,
@@ -33,9 +40,9 @@ public class ResonantRepeater : TML.ModItem
 			KnockBack: 0,
 			Owner: player.whoAmI
 		);
-	}
 
-	public override FNA.Vector2? HoldoutOffset() => FNA.Vector2.UnitX * -9;
+		return true;
+	}
 }
 
 public class ResonantNail : TML.ModProjectile
@@ -80,17 +87,28 @@ public class StrawDoll : TML.ModProjectile
 	public override void SetDefaults() {
 		Projectile.Size = new FNA.Vector2 { X = 22, Y = 30 };
 		Projectile.timeLeft = 5 * 60;
+		Projectile.friendly = false;
+		Projectile.hostile = false;
+		Projectile.With(new Components.OnTimer<Components.SpawnDust> {
+			Inner = new Components.SpawnDust {
+				Type = Terraria.ID.DustID.HallowSpray,
+				Count = 15,
+				Velocity = static () => Terraria.Main.rand.NextVector2Unit() * 3f,
+				RelativePosition = static () => FNA.Vector2.Zero,
+			},
+			Timer = Projectile.timeLeft - 1
+		});
+	}
 
+	public override void OnSpawn(Terraria.DataStructures.IEntitySource source) {
 		Projectile.With(new Components.StuckTo {
 			Target = Terraria.Main.player[Projectile.owner],
-			WithOffset = GetOffset
+			WithOffset = GetOffset,
 		});
 	}
 
 	public FNA.Vector2 GetOffset() {
-		var offset = System.Math.Clamp(Projectile.ai[0]--, -48, 16);
-		if ((int)offset == 48) { }
-		Projectile.ai[0] = offset;
-		return offset * FNA.Vector2.UnitY;
+		Projectile.ai[0] = System.Math.Clamp(Projectile.ai[0] + 1, 0, 60);
+		return -Projectile.ai[0] * FNA.Vector2.UnitY;
 	}
 }
