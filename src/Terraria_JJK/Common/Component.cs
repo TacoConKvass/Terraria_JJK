@@ -208,4 +208,18 @@ public static class ComponentExtensions
 				break;
 		}
 	}
+
+	public static bool TryGet<T>(this Terraria.Entity entity, out T data) where T : struct {
+		switch (entity) {
+			case Terraria.NPC npc: return npc.TryGet(out data);
+			case Terraria.Item item: return item.TryGet(out data);
+			case Terraria.Player player: return player.TryGet(out data);
+			case Terraria.Projectile projectile: return projectile.TryGet(out data);
+			default:
+				break;
+		}
+
+		data = default;
+		return false;
+	}
 }
