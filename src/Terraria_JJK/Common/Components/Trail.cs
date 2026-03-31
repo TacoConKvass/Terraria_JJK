@@ -27,8 +27,8 @@ public record struct Trail(int MaxPositions, PositionQueue Positions, System.Fun
 		}
 
 		data.Positions.Enqueue(new FNA.Vector3(projectile.Center, 0));
-		if (data.Positions.Count > data.MaxPositions)
-			data.Positions.Dequeue();
+		for (int i = 0; i < 2; i++) // Try removing excessive positions
+			if (data.Positions.Count > data.MaxPositions) data.Positions.Dequeue();
 	}
 
 	[DaybreakHooks.GlobalProjectileHooks.PreDraw]
@@ -78,6 +78,16 @@ public record struct Trail(int MaxPositions, PositionQueue Positions, System.Fun
 		}
 	}
 
-	void Core.ITriggerable.Trigger(Terraria.Entity source, Terraria.Entity target, TargetType targetType)
-		=> Core.ITriggerable.Default(source, target, targetType, this);
+	void Core.ITriggerable.Trigger(Terraria.Entity source, Terraria.Entity target, TargetType targetType) {
+		var data = this;
+		if (targetType == TargetType.Self && source.TryGet(out Trail selfData)) data = selfData;
+		else if (target.TryGet(out Trail targetData)) data = targetData;
+
+		Core.ITriggerable.Default(source, target, targetType, this with {
+			Positions = Positions ?? data.Positions,
+			Width = Width ?? data.Width,
+			Color = Color ?? data.Color,
+			Texture = Texture ?? data.Texture
+		});
+	}
 }
