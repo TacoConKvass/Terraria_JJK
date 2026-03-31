@@ -1,7 +1,7 @@
 namespace Terraria_JJK.Components;
 
 [EC.Component]
-public record struct Sticky(float TicksOfDamagePerSecond)
+public record struct Sticky(float TicksOfDamagePerSecond) : Core.ITriggerable
 {
 	private sealed class SetStickyProjectileValues : TML.GlobalProjectile
 	{
@@ -13,17 +13,13 @@ public record struct Sticky(float TicksOfDamagePerSecond)
 		}
 	}
 
-	[DaybreakHooks.GlobalProjectileHooks.OnHitNPC]
-	internal static void StickToTargetNPC(Terraria.Projectile projectile, Terraria.NPC target, Terraria.NPC.HitInfo hit, int damageDone) {
-		if (!projectile.Enabled<Sticky>()) return;
-
-		projectile.Disable<Sticky>();
-
-		var offset = projectile.Center - target.Center;
-		projectile.With(new StuckTo {
+	public void Trigger(Terraria.Entity source, Terraria.Entity target, TargetType targetType) {
+		Core.ITriggerable.Default(source, target, targetType, new StuckTo {
 			Target = target,
-			WithOffset = () => offset
+			WithOffset = () => source.Center - target.Center
 		});
+
+		source.Disable<Sticky>();
 	}
 }
 

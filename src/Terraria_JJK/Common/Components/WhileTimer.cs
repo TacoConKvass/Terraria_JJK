@@ -1,9 +1,7 @@
 namespace Terraria_JJK.Components;
 
-[EC.Component(Wraps = [
-	typeof(Fade), typeof(Shoots), typeof(DampenVelocity), typeof(Animate), typeof(CantDamage)
-])]
-public struct WhileTimer<T> where T : struct
+[EC.Component(Wraps = typeof(ITimeable))]
+public struct WhileTimer<T> where T : struct, ITimeable
 {
 	static WhileTimer() {
 		DaybreakHooks.GlobalProjectileHooks.AI.Event += TickProjectile;

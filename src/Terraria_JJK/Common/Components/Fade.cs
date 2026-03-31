@@ -1,7 +1,7 @@
 namespace Terraria_JJK.Components;
 
 [EC.Component]
-public struct Fade
+public struct Fade : ITimeable
 {
 	public float Starting;
 	public float Final;

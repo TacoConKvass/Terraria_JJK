@@ -1,10 +1,9 @@
 namespace Terraria_JJK.Components;
 
-[EC.Component(Wraps = [
-	typeof(Fade), typeof(Shoots), typeof(ApplyBuff), typeof(DampenVelocity), typeof(Animate),
-	typeof(SpawnDust)
-])]
-public struct OnTimer<T> where T : struct
+public interface ITimeable { }
+
+[EC.Component(Wraps = typeof(ITimeable))]
+public struct OnTimer<T> where T : struct, ITimeable
 {
 	static OnTimer() {
 		DaybreakHooks.GlobalProjectileHooks.AI.Event += TickProjectile;

@@ -1,19 +1,23 @@
-using static System.Linq.Enumerable;
 using AttributeExt = System.Reflection.CustomAttributeExtensions;
+using static System.Linq.Enumerable;
 
 namespace Terraria_JJK.EC;
 
-[System.AttributeUsage(System.AttributeTargets.Struct)]
 public class ComponentAttribute : System.Attribute
 {
-	public System.Type[] Wraps = [];
+	/// <summary>
+	/// 	The type of the interface that is the
+	/// 	wrapped type must implement
+	/// 	to be wrappable
+	/// </summary>
+	public System.Type? Wraps = null;
 }
 
 public class ComponentLoader : TML.ModSystem
 {
 	public override void Load() {
 		var types = Mod.Code.GetTypes().Where(type => AttributeExt.GetCustomAttribute<ComponentAttribute>(type) != null);
-		var components = types.SelectMany(T => T.IsGenericType ? InstantiateGeneric(T) : [InstantiateComponents(T)]).ToArray();
+		var components = types.SelectMany(T => T.IsGenericType ? InstantiateGeneric(T, Mod.Code) : [InstantiateComponents(T)]).ToArray();
 
 		foreach (var entry in components) {
 			entry.Deconstruct(out var npc, out var item, out var player, out var projectile);
@@ -37,14 +41,13 @@ public class ComponentLoader : TML.ModSystem
 		);
 	}
 
-	static ComponentTuple[] InstantiateGeneric(System.Type T) {
-		if (AttributeExt.GetCustomAttribute<ComponentAttribute>(T) is not ComponentAttribute { Wraps: { Length: >= 1 } wrapped })
+	static ComponentTuple[] InstantiateGeneric(System.Type T, System.Reflection.Assembly mod) {
+		if (AttributeExt.GetCustomAttribute<ComponentAttribute>(T) is not ComponentAttribute { Wraps: System.Type wrapped })
 			return [];
 
-		return wrapped.Select(t => {
-			var wrappedType = T.MakeGenericType(t);
-			System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(wrappedType.TypeHandle);
-			return InstantiateComponents(wrappedType);
+		return mod.GetTypes().Where(t => t.IsAssignableTo(wrapped)).Select(t => {
+			var type = T.MakeGenericType(t);
+			return InstantiateComponents(type);
 		}).ToArray();
 	}
 }
@@ -156,5 +159,27 @@ public static class ComponentExtensions
 		var component = projectile.GetComponent<T>();
 		data = component.Data;
 		return component.Enabled;
+	}
+
+	public static void Disable<T>(this Terraria.Entity entity) where T : struct {
+		switch (entity) {
+			case Terraria.NPC npc: npc.Disable<T>(); break;
+			case Terraria.Item item: item.Disable<T>(); break;
+			case Terraria.Player player: player.Disable<T>(); break;
+			case Terraria.Projectile projectile: projectile.Disable<T>(); break;
+			default:
+				break;
+		}
+	}
+
+	public static void With<T>(this Terraria.Entity entity, T data) where T : struct {
+		switch (entity) {
+			case Terraria.NPC npc: npc.With(data); break;
+			case Terraria.Item item: item.With(data); break;
+			case Terraria.Player player: player.With(data); break;
+			case Terraria.Projectile projectile: projectile.With(data); break;
+			default:
+				break;
+		}
 	}
 }

@@ -1,7 +1,7 @@
 namespace Terraria_JJK.Components;
 
 [EC.Component]
-public record struct CantDamage
+public record struct CantDamage : ITimeable
 {
 	[DaybreakHooks.GlobalProjectileHooks.AI]
 	static void UpdateProjectileTimer(Terraria.Projectile projectile) {

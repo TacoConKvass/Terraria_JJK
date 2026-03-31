@@ -13,7 +13,7 @@ public record struct SpawnDust(
 	int Alpha,
 	float? Scale,
 	System.Action? Callback
-) : Core.ITriggerable
+) : Core.ITriggerable, ITimeable
 {
 	[DaybreakHooks.GlobalProjectileHooks.AI]
 	internal static void ProjectileUpdate(Terraria.Projectile projectile) {

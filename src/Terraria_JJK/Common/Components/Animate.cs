@@ -1,7 +1,7 @@
 namespace Terraria_JJK.Components;
 
 [EC.Component]
-public record struct Animate(int FrameDelay)
+public record struct Animate(int FrameDelay) : ITimeable
 {
 	[DaybreakHooks.GlobalProjectileHooks.AI]
 	static void AnimateProjectile(Terraria.Projectile projectile) {
