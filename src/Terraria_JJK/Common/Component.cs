@@ -1,27 +1,40 @@
-using AttributeExt = System.Reflection.CustomAttributeExtensions;
 using static System.Linq.Enumerable;
+using static System.Reflection.CustomAttributeExtensions;
 
 namespace Terraria_JJK.EC;
 
 public class ComponentAttribute : System.Attribute
 {
 	/// <summary>
-	/// 	The type of the interface that is the
-	/// 	wrapped type must implement
-	/// 	to be wrappable
+	/// 	The type of the interface that the wrapped type 
+	/// 	must implement to be wrappable
 	/// </summary>
 	public System.Type? Wraps = null;
 }
 
 public class ComponentLoader : TML.ModSystem
 {
+	static System.Collections.Generic.Dictionary<System.Type, System.Collections.Generic.List<System.Type>> interfaceToWrapper = [];
+
 	public override void Load() {
-		var types = Mod.Code.GetTypes().Where(type => AttributeExt.GetCustomAttribute<ComponentAttribute>(type) != null);
-		var components = types.SelectMany(T => T.IsGenericType ? InstantiateGeneric(T, Mod.Code) : [InstantiateComponents(T)]).ToArray();
+		var types = Mod.Code.GetTypes().Where(type => type.GetCustomAttribute<ComponentAttribute>() != null).ToArray();
+		foreach (var type in types) {
+			if (!type.IsGenericType) continue;
+			var interfaceType = type.GetCustomAttribute<ComponentAttribute>()!.Wraps;
+			if (interfaceType == null) throw new System.InvalidOperationException("Generic components MUST specify marking interface");
+			if (!interfaceToWrapper.TryGetValue(interfaceType, out var t)) interfaceToWrapper[interfaceType] = [];
+			interfaceToWrapper[interfaceType].Add(type);
+		}
+		var components = types.Where(T => !T.IsGenericType).SelectMany(T => ComponentsOf(T));
+		System.Collections.Generic.HashSet<System.Type> componentTuples = [];
 
 		foreach (var entry in components) {
+
 			entry.Deconstruct(out var npc, out var item, out var player, out var projectile);
 			if ((npc, item, player, projectile) is not (TML.ILoadable, TML.ILoadable, TML.ILoadable, TML.ILoadable)) continue;
+			if (componentTuples.Contains(npc.GetType())) continue;
+			componentTuples.Add(npc.GetType());
+
 			Mod.AddContent(npc);
 			Mod.AddContent(item);
 			Mod.AddContent(player);
@@ -32,6 +45,29 @@ public class ComponentLoader : TML.ModSystem
 	record struct ComponentTuple(TML.ILoadable? npc, TML.ILoadable? item, TML.ILoadable? player, TML.ILoadable? projectile);
 
 	static TML.ILoadable? InstantiateWith(System.Type t, System.Type argument) => (TML.ILoadable?)System.Activator.CreateInstance(t.MakeGenericType(argument));
+
+	static System.Collections.Generic.IEnumerable<ComponentTuple> ComponentsOf(System.Type T, int depth = 0) {
+		if (depth > 9) {
+			System.Console.WriteLine($"Recursion depth reached for component {T}");
+			System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(T.TypeHandle);
+			return [InstantiateComponents(T)];
+		}
+
+		System.Collections.Generic.List<ComponentTuple> list = [];
+
+		foreach (var (wrapperInterface, wrappers) in interfaceToWrapper) {
+			if (T.IsAssignableTo(wrapperInterface)) {
+				var found = wrappers
+					.Select(wrapper => wrapper.MakeGenericType(T))
+					.SelectMany(wrapped => ComponentsOf(wrapped, depth + 1));
+				list.AddRange(found);
+			}
+		}
+		list.Add(InstantiateComponents(T));
+		System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(T.TypeHandle);
+		return list;
+	}
+
 	static ComponentTuple InstantiateComponents(System.Type t) {
 		return new(
 			InstantiateWith(typeof(NPCComponent<>), t),
@@ -39,16 +75,6 @@ public class ComponentLoader : TML.ModSystem
 			InstantiateWith(typeof(PlayerComponent<>), t),
 			InstantiateWith(typeof(ProjectileComponent<>), t)
 		);
-	}
-
-	static ComponentTuple[] InstantiateGeneric(System.Type T, System.Reflection.Assembly mod) {
-		if (AttributeExt.GetCustomAttribute<ComponentAttribute>(T) is not ComponentAttribute { Wraps: System.Type wrapped })
-			return [];
-
-		return mod.GetTypes().Where(t => t.IsAssignableTo(wrapped)).Select(t => {
-			var type = T.MakeGenericType(t);
-			return InstantiateComponents(type);
-		}).ToArray();
 	}
 }
 
