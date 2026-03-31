@@ -47,6 +47,7 @@ public class CalderaArrow : TML.ModProjectile
 				Type = Terraria.ID.BuffID.CursedInferno,
 				Duration = Duration,
 			},
+			Target = Components.TargetType.Victim
 		});
 		Projectile.With(new Components.OnHit<Components.Shoots> {
 			Inner = new() {
