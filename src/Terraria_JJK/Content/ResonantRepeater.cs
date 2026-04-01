@@ -1,6 +1,5 @@
 using TextureAsset = ReLogic.Content.Asset<Microsoft.Xna.Framework.Graphics.Texture2D>;
 using static Terraria.Utils;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Terraria_JJK.Content;
 
@@ -85,7 +84,7 @@ public class ResonantNail : TML.ModProjectile
 		Projectile.With(new Components.Listen<StrawDoll.Explode> {
 			Action = static (entity, data) => {
 				var Projectile = entity as Terraria.Projectile;
-				if (Projectile is null) return;
+				if (Projectile is null || Projectile.owner != data.Owner || !Projectile.Enabled<Components.StickTo>()) return;
 
 				Terraria.Projectile.NewProjectile(
 					Projectile.GetSource_FromThis(),
@@ -109,7 +108,7 @@ public class StrawDoll : TML.ModProjectile
 	public static int ID => TML.ModContent.ProjectileType<StrawDoll>();
 
 	[EC.Component]
-	public struct Explode : Components.IListenable;
+	public record struct Explode(int Owner) : Components.IListenable;
 
 	public override void SetDefaults() {
 		Projectile.Size = new FNA.Vector2 { X = 22, Y = 30 };
@@ -128,16 +127,26 @@ public class StrawDoll : TML.ModProjectile
 			},
 			Timer = Projectile.timeLeft - 1
 		});
-		Projectile.With(new Components.OnTimer<Components.Broadcast<StrawDoll.Explode>> {
-			Inner = new() { Data = new() },
-			Timer = Projectile.timeLeft - 1
-		});
 	}
 
 	public override void OnSpawn(Terraria.DataStructures.IEntitySource source) {
 		Projectile.With(new Components.StickTo {
 			Target = Terraria.Main.player[Projectile.owner],
 			WithOffset = GetOffset,
+		});
+		Projectile.With(new Components.OnTimer<Components.Broadcast<StrawDoll.Explode>> {
+			Inner = new() { Data = new() { Owner = Projectile.owner } },
+			Timer = Projectile.timeLeft - 1
+		});
+		Projectile.With(new Components.Listen<StrawDoll.Explode> {
+			Action = static (entity, data) => {
+				Terraria.Main.player[data.Owner].Hurt(new Terraria.Player.HurtInfo {
+					Damage = 100,
+					DamageSource = new() {
+						CustomReason = Terraria_JJK.LocalizedNetworkText("PlayerDeathReason.StrawDoll"),
+					}
+				});
+			}
 		});
 	}
 
