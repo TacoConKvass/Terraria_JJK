@@ -20,6 +20,11 @@ Items: {
 		DisplayName: Resonant Repeater
 		Tooltip: ""
 	}
+
+	Seraph: {
+		DisplayName: Seraph
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -27,4 +32,5 @@ Projectiles: {
 	ResonantNail.DisplayName: Resonant Nail
 	StrawDoll.DisplayName: Straw Doll
 	VolcanicFlame.DisplayName: Volcanic Flame
+	SeraphSpear.DisplayName: Seraph Spear
 }
