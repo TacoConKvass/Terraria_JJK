@@ -44,7 +44,7 @@ public class CalderaArrow : TML.ModProjectile
 		});
 		Projectile.With(new Components.OnHit<Components.ApplyBuff> {
 			Inner = new() {
-				Type = Terraria.ID.BuffID.CursedInferno,
+				Type = Terraria.ID.BuffID.OnFire3,
 				Duration = Duration,
 			},
 			Target = Components.TargetType.Victim
@@ -82,6 +82,11 @@ public class VolcanicFlame : TML.ModProjectile
 				Count = 1,
 				RelativePosition = static () => FNA.Vector2.Zero,
 				Velocity = static (_) => FNA.Vector2.Zero,
+			},
+		});
+		Projectile.With(new Components.OnHit<Components.PlaySound> {
+			Inner = new() {
+				Style = Terraria.ID.SoundID.Item14
 			},
 		});
 		Projectile.With(new Components.OnTimer<Components.Fade> {
