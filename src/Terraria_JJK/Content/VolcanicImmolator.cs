@@ -93,9 +93,9 @@ public class VolcanicFlame : TML.ModProjectile
 			Inner = new() {
 				Starting = 1f,
 				Final = 0.1f,
-				Duration = 3 * 60, // A second and a half,
+				Duration = 3 * 60,
 			},
-			Timer = 60, // After a second
+			Timer = 60,
 		});
 		Projectile.With(new Components.RotateWithVelocity {
 			AdditionalRotation = -FNA.MathHelper.PiOver2,

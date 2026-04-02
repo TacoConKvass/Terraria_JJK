@@ -31,6 +31,6 @@ public class Helpers
 		FNA.Matrix world = FNA.Matrix.CreateTranslation(-new FNA.Vector3(Terraria.Main.screenPosition, 0));
 		FNA.Matrix view = Terraria.Main.GameViewMatrix.TransformationMatrix;
 		FNA.Matrix.CreateOrthographicOffCenter(0, viewport.Width, viewport.Height, 0, -1, 1, out var projection);
-		return world * view * projection;// * FNA.Matrix.CreateRotationZ(FNA.MathHelper.Pi);
+		return world * view * projection;
 	}
 }
