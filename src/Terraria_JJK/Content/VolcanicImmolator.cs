@@ -57,6 +57,9 @@ public class CalderaArrow : TML.ModProjectile
 				Velocity = static (_) => -FNA.Vector2.UnitY.RotatedBy(Terraria.Main.rand.NextFloat(-FNA.MathHelper.Pi / 6, FNA.MathHelper.Pi / 6)) * FlameSpeed
 			},
 		});
+		Projectile.With(new Components.DrawPositionAdjustment {
+			Origin = new FNA.Vector2 { X = 13, Y = 36 },
+		});
 	}
 }
 
@@ -105,5 +108,8 @@ public class VolcanicFlame : TML.ModProjectile
 			Inner = default
 		});
 		Projectile.With(new Components.Animate { FrameDelay = 10 });
+		Projectile.With(new Components.DrawPositionAdjustment {
+			Origin = new FNA.Vector2 { X = 7, Y = 22 }
+		});
 	}
 }
