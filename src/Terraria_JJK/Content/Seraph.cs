@@ -57,10 +57,6 @@ public class SeraphSpear : TML.ModProjectile
 			Terraria.Main.buffNoTimeDisplay[Type] = true;
 		}
 
-		public override void Update(Terraria.NPC npc, ref int buffIndex) {
-			Terraria.Main.NewText(npc.HasBuff<Buff>());
-		}
-
 		[DaybreakHooks.GlobalNPCHooks.ModifyIncomingHit]
 		static void NPCIncreaseDamageTaken(Terraria.NPC npc, ref Terraria.NPC.HitModifiers modifiers) {
 			if (!npc.HasBuff<Buff>()) return;
