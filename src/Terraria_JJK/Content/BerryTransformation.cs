@@ -1,11 +1,11 @@
 using Collections = System.Collections.Generic;
 using Data = Terraria.DataStructures;
 using Input = Terraria.GameInput;
-using Locale = Terraria.Localization;
 using TextureAsset = ReLogic.Content.Asset<Microsoft.Xna.Framework.Graphics.Texture2D>;
 using TextureRepo = Terraria.GameContent.TextureAssets;
 using UI = Terraria.UI;
 using UIElements = Terraria.GameContent.UI.Elements;
+using static Terraria.Utils;
 
 namespace Terraria_JJK.Content;
 
@@ -57,6 +57,43 @@ public class BerryTransformation : TML.ModPlayer
 		}
 	}
 
+	public override bool CanUseItem(Terraria.Item item) => !Activated;
+
+
+	int currentAttackIndex;
+	int currentAttackDelay;
+	int[] attackType = [
+		Terraria.ID.ProjectileID.BeeArrow,
+		Terraria.ID.ProjectileID.DemonScythe
+	];
+	float[] attackSpeed = [
+		15f,
+		10f,
+	];
+	const int AttackDelay = 60;
+
+	public override void PostUpdate() {
+		// Execute this code strictly client side, and only if the transformation was activated
+		if (!(Terraria.Main.LocalPlayer.whoAmI == Player.whoAmI && Activated)) return;
+		if (!Terraria.Main.mouseLeft) return;
+		if (currentAttackDelay > 0) {
+			currentAttackDelay--;
+			return;
+		}
+
+		var item = Player.HeldItem;
+
+		Terraria.Projectile.NewProjectile(
+			Player.GetSource_Misc("Berry Transformation attack"),
+			position: Player.Center, velocity: Player.Center.DirectionTo(Terraria.Main.MouseWorld) * attackSpeed[currentAttackIndex],
+			Type: attackType[currentAttackIndex], Damage: (int)Player.GetDamage(item.DamageType).ApplyTo(item.damage),
+			KnockBack: Player.GetKnockback(item.DamageType).ApplyTo(item.knockBack), Owner: Player.whoAmI
+		);
+
+		currentAttackIndex = (currentAttackIndex + 1) % attackType.Length;
+		currentAttackDelay = AttackDelay;
+	}
+
 	public override void ResetEffects() {
 		Available = false;
 
@@ -71,7 +108,7 @@ public class BerryTransformation : TML.ModPlayer
 		);
 	}
 
-	public override void UpdateDead() => (TimeLeft, Activated) = (0, false);
+	public override void UpdateDead() => (TimeLeft, Activated, currentAttackDelay, currentAttackIndex) = (0, false, 0, 9);
 
 	public override void Load() => TransformKeybind = TML.KeybindLoader.RegisterKeybind(Mod, "BerryTransformation", FNA.Input.Keys.None);
 
