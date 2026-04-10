@@ -5,7 +5,7 @@ namespace Terraria_JJK.Content;
 
 public class ResonantRepeater : TML.ModItem
 {
-	public override string Texture => Terraria_JJK.AssetPath + $"Items/{nameof(ResonantRepeater)}";
+	public override string Texture => Terraria_JJK.AssetPath($"Items/{nameof(ResonantRepeater)}");
 
 	public override void SetDefaults() {
 		Item.Size = new FNA.Vector2 { X = 50, Y = 20 };
@@ -47,13 +47,13 @@ public class ResonantRepeater : TML.ModItem
 
 public class ResonantNail : TML.ModProjectile
 {
-	public override string Texture => Terraria_JJK.AssetPath + $"Projectiles/{nameof(ResonantNail)}";
+	public override string Texture => Terraria_JJK.AssetPath($"Projectiles/{nameof(ResonantNail)}");
 
 	public static int ID => TML.ModContent.ProjectileType<ResonantNail>();
 	static TextureAsset trail_texture = null!;
 
 	public override void SetStaticDefaults() {
-		trail_texture = TML.ModContent.Request<FNA.Graphics.Texture2D>(Terraria_JJK.AssetPath + "Extra/HollowBeam");
+		trail_texture = TML.ModContent.Request<FNA.Graphics.Texture2D>(Terraria_JJK.AssetPath("Extra/HollowBeam"));
 	}
 
 	public override void SetDefaults() {
@@ -103,7 +103,7 @@ public class ResonantNail : TML.ModProjectile
 
 public class StrawDoll : TML.ModProjectile
 {
-	public override string Texture => Terraria_JJK.AssetPath + $"Projectiles/{nameof(StrawDoll)}";
+	public override string Texture => Terraria_JJK.AssetPath($"Projectiles/{nameof(StrawDoll)}");
 
 	public static int ID => TML.ModContent.ProjectileType<StrawDoll>();
 

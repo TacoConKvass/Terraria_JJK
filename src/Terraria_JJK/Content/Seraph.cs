@@ -2,7 +2,7 @@ namespace Terraria_JJK.Content;
 
 public class Seraph : TML.ModItem
 {
-	public override string Texture => Terraria_JJK.AssetPath + $"Items/{nameof(Seraph)}";
+	public override string Texture => Terraria_JJK.AssetPath($"Items/{nameof(Seraph)}");
 
 	public override void SetDefaults() {
 		Item.Size = new FNA.Vector2 { X = 60, Y = 60 };
@@ -25,7 +25,7 @@ public class Seraph : TML.ModItem
 
 public class SeraphSpear : TML.ModProjectile
 {
-	public override string Texture => Terraria_JJK.AssetPath + $"Projectiles/{nameof(SeraphSpear)}";
+	public override string Texture => Terraria_JJK.AssetPath($"Projectiles/{nameof(SeraphSpear)}");
 
 	public static int ID => TML.ModContent.ProjectileType<SeraphSpear>();
 

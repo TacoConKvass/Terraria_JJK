@@ -8,7 +8,7 @@ namespace Terraria_JJK;
 
 public class Terraria_JJK : TML.Mod
 {
-	public const string AssetPath = $"{nameof(Terraria_JJK)}/Assets/";
+	public static string AssetPath(string subpath) => $"{nameof(Terraria_JJK)}/Assets/{subpath}";
 
 	public static string GetLocalization(string key) => Locale.Language.GetTextValue($"Mods.{nameof(Terraria_JJK)}.{key}");
 

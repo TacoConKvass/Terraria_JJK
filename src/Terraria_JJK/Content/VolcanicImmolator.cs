@@ -4,7 +4,7 @@ namespace Terraria_JJK.Content;
 
 public class VolcanicImmolator : TML.ModItem
 {
-	public override string Texture => Terraria_JJK.AssetPath + $"Items/{nameof(VolcanicImmolator)}";
+	public override string Texture => Terraria_JJK.AssetPath($"Items/{nameof(VolcanicImmolator)}");
 
 	public override void SetDefaults() {
 		Item.Size = new FNA.Vector2 { X = 32, Y = 70 };
@@ -27,7 +27,7 @@ public class CalderaArrow : TML.ModProjectile
 {
 	public static int ID => TML.ModContent.ProjectileType<CalderaArrow>();
 
-	public override string Texture => Terraria_JJK.AssetPath + $"Projectiles/{nameof(CalderaArrow)}";
+	public override string Texture => Terraria_JJK.AssetPath($"Projectiles/{nameof(CalderaArrow)}");
 
 	const int Duration = 10 * 60; // 10 seconds
 	const int SpawnedFlames = 5;
@@ -65,7 +65,7 @@ public class CalderaArrow : TML.ModProjectile
 
 public class VolcanicFlame : TML.ModProjectile
 {
-	public override string Texture => Terraria_JJK.AssetPath + $"Projectiles/{nameof(VolcanicFlame)}";
+	public override string Texture => Terraria_JJK.AssetPath($"Projectiles/{nameof(VolcanicFlame)}");
 
 	public static int ID => TML.ModContent.ProjectileType<VolcanicFlame>();
 

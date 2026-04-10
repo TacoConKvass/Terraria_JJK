@@ -59,7 +59,6 @@ public class BerryTransformation : TML.ModPlayer
 
 	public override bool CanUseItem(Terraria.Item item) => !Activated;
 
-
 	int currentAttackIndex;
 	int currentAttackDelay;
 	int[] attackType = [
@@ -158,7 +157,7 @@ public class BerryUI
 		TextureAsset frame = null!;
 
 		public override void OnInitialize() {
-			frame = TML.ModContent.Request<FNA.Graphics.Texture2D>($"{nameof(Terraria_JJK)}/Assets/BerryTransformation_Frame", ReLogic.Content.AssetRequestMode.ImmediateLoad);
+			frame = TML.ModContent.Request<FNA.Graphics.Texture2D>(Terraria_JJK.AssetPath("BerryTransformation_Frame"), ReLogic.Content.AssetRequestMode.ImmediateLoad);
 
 			area = new UI.UIElement();
 			area.Width.Set(frame.Value.Width, 0f);
@@ -214,7 +213,7 @@ public class BerryLayers
 	{
 		public static TextureAsset? Texture;
 
-		public override void Load() => Texture = TML.ModContent.Request<FNA.Graphics.Texture2D>($"{Mod.Name}/Assets/BerriesTransformation_Head");
+		public override void Load() => Texture = TML.ModContent.Request<FNA.Graphics.Texture2D>(Terraria_JJK.AssetPath($"BerriesTransformation_Head"));
 
 		public override void Unload() => Texture = null!;
 
@@ -247,7 +246,7 @@ public class BerryLayers
 	{
 		public static TextureAsset? Texture;
 
-		public override void Load() => Texture = TML.ModContent.Request<FNA.Graphics.Texture2D>($"{Mod.Name}/Assets/BerriesTransformation_Body");
+		public override void Load() => Texture = TML.ModContent.Request<FNA.Graphics.Texture2D>(Terraria_JJK.AssetPath("BerriesTransformation_Body"));
 
 		public override void Unload() => Texture = null!;
 
