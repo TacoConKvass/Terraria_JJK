@@ -25,7 +25,6 @@ public class Helpers
 		return (vector - translation) * 2 / screen;
 	}
 
-
 	public static FNA.Matrix GetMatrix() {
 		var viewport = Terraria.Main.graphics.GraphicsDevice.Viewport;
 		FNA.Matrix world = FNA.Matrix.CreateTranslation(-new FNA.Vector3(Terraria.Main.screenPosition, 0));
