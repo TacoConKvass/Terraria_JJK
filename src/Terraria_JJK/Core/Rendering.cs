@@ -8,7 +8,7 @@ public class Helpers
 
 	[DaybreakHooks.ModSystemHooks.OnModLoad(Side = TML.ModSide.Client)]
 	static void SetEffect() {
-		DefaultEffect = TML.ModContent.Request<FNA.Graphics.Effect>(Terraria_JJK.AssetPath + "Effects/BasicEffect");
+		DefaultEffect = TML.ModContent.Request<FNA.Graphics.Effect>(Terraria_JJK.AssetPath("Effects/BasicEffect"));
 	}
 
 	public static int PrimitiveCount(FNA.Graphics.PrimitiveType type, int count) => type switch {
