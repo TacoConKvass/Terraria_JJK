@@ -25,6 +25,11 @@ Items: {
 		DisplayName: Seraph
 		Tooltip: ""
 	}
+
+	Kamutoke: {
+		DisplayName: Kamutoke
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -35,6 +40,7 @@ Projectiles: {
 	SeraphSpear.DisplayName: Seraph Spear
 	BerryEnergyBolt.DisplayName: Mythical Berry Energy Bolt
 	BerrySoundBlast.DisplayName: Mythical Berry Sound Blast
+	KamutokeLightning.DisplayName: Kamutoke Lightning
 }
 
 Buffs: {
