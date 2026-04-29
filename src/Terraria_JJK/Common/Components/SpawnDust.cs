@@ -12,7 +12,9 @@ public record struct SpawnDust(
 	FNA.Color Color,
 	int Alpha,
 	float? Scale,
-	System.Action? Callback
+	System.Action? Callback,
+	bool AffectedByGravity = true,
+	bool Perfect = false
 ) : ITriggerable, ITimeable
 {
 	[DaybreakHooks.GlobalProjectileHooks.AI]
@@ -34,12 +36,20 @@ public record struct SpawnDust(
 
 				var velocity = Velocity();
 
-				Terraria.Dust.NewDust(
+				Terraria.Dust dust;
+				if (!Perfect) dust = Terraria.Dust.NewDustDirect(
 					center + RelativePosition(),
 					bounds.Width, bounds.Height,
 					type, velocity.X, velocity.Y,
 					Alpha: Alpha, newColor: Color, Scale: Scale ?? 1
 				);
+				else dust = Terraria.Dust.NewDustPerfect(
+					center + RelativePosition(),
+					type, velocity,
+					Alpha: Alpha, newColor: Color, Scale: Scale ?? 1
+				);
+
+				dust.noGravity = !AffectedByGravity;
 			}
 
 			Callback?.Invoke();
