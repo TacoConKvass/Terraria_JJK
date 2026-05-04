@@ -9,9 +9,9 @@ namespace Terraria_JJK.Components;
 
 public enum TextureMode
 {
-	ApplyLightColor,
-	ApplyLightBrightness,
-	UseActualColor,
+	ApplyLightColor = 1,
+	ApplyLightBrightness = 2,
+	UseActualColor = 4,
 }
 
 [EC.Component]
