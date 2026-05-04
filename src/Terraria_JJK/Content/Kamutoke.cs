@@ -1,4 +1,5 @@
 using static Terraria.Utils;
+using ArmMode = Terraria_JJK.Components.SpecialUseStyle.ArmMode;
 
 namespace Terraria_JJK.Content;
 
@@ -19,6 +20,15 @@ public class Kamutoke : TML.ModItem
 			Delay = 60,
 			Velocity = static (orig) => orig * LightningSpeed,
 			RelativePosition = static () => FNA.Vector2.Zero,
+		});
+		Item.With(new Components.SpecialUseStyle {
+			Rotation = static (player) => {
+				var gravity_adjust = new FNA.Vector2 { X = 1, Y = player.gravDir };
+				return (player.MountedCenter.DirectionTo(Terraria.Main.MouseWorld) * gravity_adjust).ToRotation();
+			},
+			Location = static (player, rotation) => rotation.ToRotationVector2() * -1 * Core.Const.TileSize * 0.5f,
+			Diagonal = true,
+			CompositeArmMode = ArmMode.Front | ArmMode.Front,
 		});
 	}
 }
