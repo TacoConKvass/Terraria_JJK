@@ -19,7 +19,7 @@ public class Kamutoke : TML.ModItem
 			Type = KamutokeLightning.ID,
 			Delay = 60,
 			Velocity = static (orig) => orig * LightningSpeed,
-			RelativePosition = static () => FNA.Vector2.Zero,
+			RelativePosition = static (direction) => direction * Core.Const.TileSize,
 		});
 		Item.With(new Components.SpecialUseStyle {
 			Rotation = static (player) => {

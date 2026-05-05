@@ -18,7 +18,6 @@ public class Seraph : TML.ModItem
 			Count = 1,
 			Delay = 30,
 			Velocity = static (orig) => orig * 10f,
-			RelativePosition = static () => FNA.Vector2.Zero,
 		});
 	}
 }

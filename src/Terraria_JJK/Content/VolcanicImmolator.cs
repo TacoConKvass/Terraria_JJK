@@ -53,7 +53,6 @@ public class CalderaArrow : TML.ModProjectile
 			Inner = new() {
 				Type = VolcanicFlame.ID,
 				Count = SpawnedFlames,
-				RelativePosition = static () => FNA.Vector2.Zero,
 				Velocity = static (_) => -FNA.Vector2.UnitY.RotatedBy(Terraria.Main.rand.NextFloat(-FNA.MathHelper.Pi / 6, FNA.MathHelper.Pi / 6)) * FlameSpeed
 			},
 		});
@@ -83,7 +82,6 @@ public class VolcanicFlame : TML.ModProjectile
 			Inner = new() {
 				Type = Terraria.ID.ProjectileID.Flames,
 				Count = 1,
-				RelativePosition = static () => FNA.Vector2.Zero,
 				Velocity = static (_) => FNA.Vector2.Zero,
 			},
 		});
