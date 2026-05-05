@@ -63,16 +63,16 @@ public record struct SpecialUseStyle
 			arm_mode = player_data.net.arm_mode;
 		}
 
+		var rotation_vector = Terraria.Utils.ToRotationVector2(rotation);
+		player.direction = Terraria.Utils.ToDirectionInt(rotation_vector.X >= 0);
+
 		float angle = (player.direction, data.Diagonal) switch {
-			( > 0, true) => FNA.MathHelper.PiOver4,
+			( >= 0, true) => FNA.MathHelper.PiOver4,
 			(_, true) => FNA.MathHelper.PiOver4 * 3,
 			_ => 0
 		};
 
 		player.itemRotation = rotation + angle;
-		var rotation_vector = Terraria.Utils.ToRotationVector2(rotation);
-		if (data.TurnOnUse)
-			player.direction = Terraria.Utils.ToDirectionInt(rotation_vector.X >= 0);
 		player.itemLocation = player.MountedCenter + relative_location; // + rotation_vector * data.HoldDistance;
 
 		float arm_angle;
