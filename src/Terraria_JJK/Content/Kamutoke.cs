@@ -7,12 +7,11 @@ public class Kamutoke : TML.ModItem
 {
 	public override string Texture => Terraria_JJK.AssetPath($"Items/{nameof(Kamutoke)}");
 
-	const float LightningSpeed = 2f;
+	const float LightningSpeed = 1f;
 
 	public override void SetDefaults() {
 		Item.Size = new FNA.Vector2 { X = 58, Y = 58 };
 		Item.damage = 10;
-		Item.useStyle = Terraria.ID.ItemUseStyleID.Swing;
 		Item.DamageType = TML.DamageClass.Ranged;
 
 		Item.With(new Components.Shoots {
@@ -26,9 +25,9 @@ public class Kamutoke : TML.ModItem
 				var gravity_adjust = new FNA.Vector2 { X = 1, Y = player.gravDir };
 				return (player.MountedCenter.DirectionTo(Terraria.Main.MouseWorld) * gravity_adjust).ToRotation();
 			},
-			Location = static (player, rotation) => rotation.ToRotationVector2() * -1 * Core.Const.TileSize * 0.5f,
+			Location = static (_, rotation) => rotation.ToRotationVector2() * -1 * Core.Const.TileSize,
 			Diagonal = true,
-			CompositeArmMode = ArmMode.Front | ArmMode.Front,
+			CompositeArmMode = ArmMode.Front,
 		});
 	}
 }
@@ -39,7 +38,7 @@ public class KamutokeLightning : TML.ModProjectile
 
 	public static int ID => TML.ModContent.ProjectileType<KamutokeLightning>();
 
-	const int TicksOfMovementPerStraight = 20;
+	const int TicksOfMovementPerStraight = 40;
 	const int Turns = 15;
 
 	ref float LevelInHierarchy(Terraria.Projectile projectile) => ref projectile.ai[0];
